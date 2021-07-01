@@ -12,27 +12,27 @@
         <i class="fas fa-sort"></i> Sort
       </button>
       <ul class="dropdown-menu" aria-labelledby="sort">
-        <li>
+        <li @click="$emit('setSortType')">
           <a class="dropdown-item" href="#">
             <i class="fas fa-globe"></i> All
           </a>
         </li>
-        <li>
+        <li @click="$emit('setSortType', 'alphabetically')">
           <a class="dropdown-item" href="#">
             <i class="fas fa-sort-alpha-down"></i> Alphabetically
           </a>
         </li>
-        <li>
+        <li @click="$emit('setSortType', 'importance')">
           <a class="dropdown-item" href="#">
             <i class="fas fa-star"></i> Importance
           </a>
         </li>
-        <li>
+        <li @click="$emit('setSortType', 'dueDate')">
           <a class="dropdown-item" href="#">
             <i class="fas fa-calendar"></i> Due Date
           </a>
         </li>
-        <li>
+        <li @click="$emit('setSortType', 'completed')">
           <a class="dropdown-item" href="#">
             <i class="fas fa-check"></i> Completed
           </a>
@@ -43,7 +43,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  emits: ["setSortType"],
+};
 </script>
 
 <style scoped>
