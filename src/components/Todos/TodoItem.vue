@@ -32,20 +32,16 @@ export default {
   setup(props) {
     const formatDate = computed(() => {
       if (props.todo.dueDate) {
-        return moment(props.todo.dueDate.toDate()).format("ddd, MMM DD");
+        return moment(props.todo.dueDate).format("ddd, MMM DD");
       }
       return;
     });
 
     const isOverDue = computed(() => {
       if (props.todo.dueDate) {
-        const dueDate = moment(props.todo.dueDate.toDate()).format(
-          "YYYY-MM-DD"
-        );
-        const currentDate = moment(new Date()).format("YYYY-MM-DD");
-        return moment(currentDate).diff(moment(dueDate), "days") > 0
-          ? true
-          : false;
+        const dueDate = moment(props.todo.dueDate);
+        const currentDate = moment(new Date());
+        return currentDate.diff(dueDate, "days") > 0 ? true : false;
       }
       return;
     });

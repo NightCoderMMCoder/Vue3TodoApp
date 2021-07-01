@@ -3,10 +3,12 @@
     <div class="container">
       <h4 class="navbar-brand mb-0">Todos</h4>
       <ul class="navbar-nav">
-        <li class="nav-item me-5">
+        <router-link class="nav-item me-5" :to="{ name: 'Home' }">
           Home
-        </li>
-        <li class="nav-item">Add Todo</li>
+        </router-link>
+        <router-link class="nav-item" :to="{ name: 'AddTodo' }"
+          >Add Todo</router-link
+        >
       </ul>
     </div>
   </nav>
@@ -25,10 +27,10 @@ ul {
 ul div {
   display: flex;
 }
-ul li {
+ul a {
   cursor: pointer;
 }
-.router-link-exact-active li {
+.router-link-exact-active {
   border-bottom: 3px solid #fff;
 }
 </style>

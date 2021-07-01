@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <SearchBox @set-sort-type="setSortType" v-model="search" />
-    <TodosList :todos="searchTodos" />
+    <TodosList :todos="searchTodos" :loading="loading" />
   </div>
 </template>
 
@@ -18,7 +18,10 @@ export default {
     const sortType = ref("");
     const search = ref("");
     const activeSearch = ref("");
+
     const todos = ref([]);
+
+    const loading = ref(true);
 
     onMounted(async () => {
       const collectionRef = db.collection("todos");
@@ -26,6 +29,7 @@ export default {
       snapshot.docs.forEach((doc) => {
         todos.value.push({ ...doc.data(), id: doc.id });
       });
+      loading.value = false;
     });
 
     const setSortType = (type) => {
@@ -70,7 +74,7 @@ export default {
       return sortedTodos.value;
     });
 
-    return { todos, setSortType, sortedTodos, search, searchTodos };
+    return { todos, setSortType, sortedTodos, search, searchTodos, loading };
   },
 };
 </script>
