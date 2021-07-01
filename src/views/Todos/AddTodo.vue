@@ -64,7 +64,9 @@ export default {
       }
       if (formValidate) {
         loading.value = true;
-        const doc = await db.collection("todos").add(todo);
+        const doc = await db
+          .collection("todos")
+          .add({ ...todo, createdAt: new Date().toString() });
         router.push({ name: "Home" });
         loading.value = false;
       }

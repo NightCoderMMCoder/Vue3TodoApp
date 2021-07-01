@@ -24,12 +24,20 @@ export default {
     const loading = ref(true);
 
     onMounted(async () => {
-      const collectionRef = db.collection("todos");
-      const snapshot = await collectionRef.get();
-      snapshot.docs.forEach((doc) => {
-        todos.value.push({ ...doc.data(), id: doc.id });
+      const collectionRef = db.collection("todos").orderBy("createdAt", "desc");
+      // const snapshot = await collectionRef.get();
+      // snapshot.docs.forEach((doc) => {
+      //   todos.value.push({ ...doc.data(), id: doc.id });
+      // });
+      // loading.value = false;
+      collectionRef.onSnapshot((snapshot) => {
+        const results = [];
+        snapshot.docs.forEach((doc) => {
+          results.push({ ...doc.data(), id: doc.id });
+        });
+        todos.value = results;
+        loading.value = false;
       });
-      loading.value = false;
     });
 
     const deleteTodo = async (id) => {
