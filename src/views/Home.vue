@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { computed, ref, watch, onMounted, provide } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
 import SearchBox from "../components/Todos/SearchBox.vue";
 import TodosList from "../components/Todos/TodosList.vue";
 import db from "../firebase/init";
@@ -39,16 +39,6 @@ export default {
         loading.value = false;
       });
     });
-
-    const deleteTodo = async (id) => {
-      await db
-        .collection("todos")
-        .doc(id)
-        .delete();
-      const idx = todos.value.findIndex((todo) => todo.id === id);
-      todos.value.splice(idx, 1);
-    };
-    provide("deleteTodo", deleteTodo);
 
     const setSortType = (type) => {
       sortType.value = type;

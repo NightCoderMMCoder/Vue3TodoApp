@@ -11,7 +11,10 @@
         </small>
       </p>
       <span>
-        <i class="fas fa-pencil-alt"></i>
+        <i
+          class="fas fa-pencil-alt"
+          @click="$router.push({ name: 'EditTodo', params: { id: todo.id } })"
+        ></i>
         <i class="fas fa-trash" @click="deleteTodo(todo.id)"></i>
         <i class="far fa-star" :class="{ important: todo.important }"></i>
       </span>
@@ -20,20 +23,26 @@
 </template>
 
 <script>
-import { computed, inject } from "vue";
+import { computed } from "vue";
 import db from "../../firebase/init";
 import moment from "moment";
 
 export default {
   props: { todo: Object },
   setup(props) {
-    const deleteTodo = inject("deleteTodo");
     const formatDate = computed(() => {
       if (props.todo.dueDate) {
         return moment(props.todo.dueDate).format("ddd, MMM DD");
       }
       return;
     });
+
+    const deleteTodo = async () => {
+      await db
+        .collection("todos")
+        .doc(props.todo.id)
+        .delete();
+    };
 
     const isOverDue = computed(() => {
       if (props.todo.dueDate) {

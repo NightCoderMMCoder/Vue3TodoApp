@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="card-header bg-primary">Add Todo</div>
+    <div class="card-header bg-primary">Edit Todo</div>
     <div class="card-body">
       <form @submit.prevent="handleSubmit">
         <div class="mb-2">
@@ -27,7 +27,7 @@
           />
         </div>
         <button class="btn btn-primary mt-2" :disabled="loading">
-          <ClipLoader :loading="loading" color="#fff" size="20px" /> Add
+          <ClipLoader :loading="loading" color="#fff" size="20px" /> Update
         </button>
       </form>
     </div>
@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import { useRouter } from "vue-router";
-import { reactive, ref, toRefs } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import db from "../../firebase/init";
 import ClipLoader from "vue-spinner/src/ClipLoader.vue";
 
@@ -44,20 +44,22 @@ export default {
   components: { ClipLoader },
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const todo = reactive({
       task: "",
       dueDate: null,
     });
     const errors = reactive({});
-    const loading = ref(false);
+    const loading = ref(true);
 
     const handleSubmit = async () => {
       const isValidate = validation({ dueDate: false });
       if (isValidate) {
         loading.value = true;
-        const doc = await db
+        await db
           .collection("todos")
-          .add({ ...todo, createdAt: new Date().toString() });
+          .doc(route.params.id)
+          .update(todo);
         router.push({ name: "Home" });
         loading.value = false;
       }
@@ -81,6 +83,21 @@ export default {
         errors[key] = `Please enter the ${key} field.`;
       }
     };
+
+    onMounted(async () => {
+      const { id } = route.params;
+      const doc = await db
+        .collection("todos")
+        .doc(id)
+        .get();
+      if (doc.exists) {
+        todo.task = doc.data().task;
+        todo.dueDate = doc.data().dueDate;
+        loading.value = false;
+      } else {
+        router.push({ name: "Home" });
+      }
+    });
 
     return { ...toRefs(todo), handleSubmit, errors, clearValidation, loading };
   },
