@@ -1,12 +1,12 @@
 <template>
   <div class="home">
-    <SearchBox @set-sort-type="setSortType" />
-    <TodosList :todos="sortedTodos" />
+    <SearchBox @set-sort-type="setSortType" v-model:search="search" />
+    <TodosList :todos="searchTodos" />
   </div>
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import SearchBox from "../components/Todos/SearchBox.vue";
 import TodosList from "../components/Todos/TodosList.vue";
 export default {
@@ -14,6 +14,8 @@ export default {
   name: "Home",
   setup() {
     const sortType = ref("");
+    const search = ref("");
+    const activeSearch = ref("");
     const todos = ref([
       {
         id: 1,
@@ -60,7 +62,24 @@ export default {
       return todos.value;
     });
 
-    return { todos, setSortType, sortedTodos };
+    watch(search, (val) => {
+      setTimeout(() => {
+        if (val === search.value) {
+          activeSearch.value = val;
+        }
+      }, 300);
+    });
+
+    const searchTodos = computed(() => {
+      if (activeSearch.value) {
+        return sortedTodos.value.filter((todo) =>
+          todo.task.toUpperCase().includes(search.value.toUpperCase())
+        );
+      }
+      return sortedTodos.value;
+    });
+
+    return { todos, setSortType, sortedTodos, search, searchTodos };
   },
 };
 </script>
