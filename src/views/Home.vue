@@ -1,11 +1,15 @@
 <template>
   <div class="home">
-    <h1>Home Page</h1>
+    <SearchBox />
+    <TodosList />
   </div>
 </template>
 
 <script>
+import SearchBox from "../components/Todos/SearchBox.vue";
+import TodosList from "../components/Todos/TodosList.vue";
 export default {
+  components: { SearchBox, TodosList },
   name: "Home",
 };
 </script>
