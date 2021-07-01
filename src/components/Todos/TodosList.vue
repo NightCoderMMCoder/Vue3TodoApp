@@ -1,26 +1,14 @@
 <template>
   <div class="todos-list">
-    <div class="form-check" v-for="todo in todos" :key="todo.id">
-      <input class="form-check-input" type="checkbox" value="" id="" />
-      <label class="form-check-label" for="">
-        <p class="mb-0">
-          <span :class="{ completed: todo.completed }">{{ todo.task }}</span>
-          <br />
-          <small>{{ todo.dueDate }}</small>
-        </p>
-        <span>
-          <i class="fas fa-pencil-alt"></i>
-          <i class="fas fa-trash"></i>
-          <i class="far fa-star" :class="{ important: todo.important }"></i>
-        </span>
-      </label>
-    </div>
+    <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" />
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import TodoItem from "./TodoItem.vue";
 export default {
+  components: { TodoItem },
   setup() {
     const todos = ref([
       {
@@ -28,7 +16,7 @@ export default {
         task: "Homework",
         completed: true,
         important: true,
-        dueDate: new Date(2021, 2, 4),
+        dueDate: new Date(2021, 6, 3),
       },
       {
         id: 2,
@@ -45,46 +33,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-check {
-  border-bottom: 1px solid #bbbbbb;
-  padding: 20px;
-}
-.form-check-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.completed {
-  transition: 0.3s linear;
-  text-decoration: line-through;
-  opacity: 0.7;
-}
-.fa-calendar {
-  color: var(--primary);
-}
-.fa-star {
-  color: rgb(160, 160, 160);
-  cursor: pointer;
-}
-.important {
-  font-weight: bold;
-  color: var(--primary);
-}
-.overDue {
-  color: red;
-}
-.overDue .fas {
-  color: red;
-}
-.fa-trash {
-  margin: 0 20px;
-  color: #fa1e0e;
-  cursor: pointer;
-}
-.fa-pencil-alt {
-  color: #ffe227;
-  cursor: pointer;
-}
-</style>
