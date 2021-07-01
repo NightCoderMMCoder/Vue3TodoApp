@@ -1,12 +1,7 @@
 <template>
   <div class="form-check">
-    <input
-      class="form-check-input"
-      type="checkbox"
-      :id="todo.id"
-      :checked="todo.completed"
-    />
-    <label class="form-check-label" :for="todo.id">
+    <input class="form-check-input" type="checkbox" :checked="todo.completed" />
+    <label class="form-check-label">
       <p class="mb-0">
         <span :class="{ completed: todo.completed }">{{ todo.task }}</span>
         <br />
@@ -17,7 +12,7 @@
       </p>
       <span>
         <i class="fas fa-pencil-alt"></i>
-        <i class="fas fa-trash"></i>
+        <i class="fas fa-trash" @click="deleteTodo(todo.id)"></i>
         <i class="far fa-star" :class="{ important: todo.important }"></i>
       </span>
     </label>
@@ -25,11 +20,14 @@
 </template>
 
 <script>
+import { computed, inject } from "vue";
+import db from "../../firebase/init";
 import moment from "moment";
-import { computed } from "vue";
+
 export default {
   props: { todo: Object },
   setup(props) {
+    const deleteTodo = inject("deleteTodo");
     const formatDate = computed(() => {
       if (props.todo.dueDate) {
         return moment(props.todo.dueDate).format("ddd, MMM DD");
@@ -46,7 +44,7 @@ export default {
       return;
     });
 
-    return { formatDate, isOverDue };
+    return { formatDate, isOverDue, deleteTodo };
   },
 };
 </script>
