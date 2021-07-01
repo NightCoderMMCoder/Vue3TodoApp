@@ -37,3 +37,7 @@ a:hover {
   background-color: var(--primary);
   border-color: var(--primary);
 }
+.btn {
+  display: flex;
+  align-items: center;
+}
