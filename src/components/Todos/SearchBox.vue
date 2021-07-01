@@ -1,6 +1,12 @@
 <template>
   <div class="search mb-4">
-    <input type="text" class="form-control" placeholder="Search..." />
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search..."
+      :value="modelValue"
+      @input="(e) => $emit('update:modelValue', e.target.value)"
+    />
     <div class="dropdown">
       <button
         class="btn btn-primary dropdown-toggle"
@@ -44,7 +50,8 @@
 
 <script>
 export default {
-  emits: ["setSortType"],
+  emits: ["setSortType", "update:modelValue"],
+  props: { modelValue: String },
 };
 </script>
 

@@ -1,39 +1,32 @@
 <template>
   <div class="home">
-    <SearchBox @set-sort-type="setSortType" />
-    <TodosList :todos="sortedTodos" />
+    <SearchBox @set-sort-type="setSortType" v-model="search" />
+    <TodosList :todos="searchTodos" />
   </div>
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
 import SearchBox from "../components/Todos/SearchBox.vue";
 import TodosList from "../components/Todos/TodosList.vue";
+import db from "../firebase/init";
+
 export default {
   components: { SearchBox, TodosList },
   name: "Home",
   setup() {
     const sortType = ref("");
-    const todos = ref([
-      {
-        id: 1,
-        task: "Homework",
-        completed: true,
-        important: true,
-        dueDate: new Date(2021, 6, 3),
-      },
-      {
-        id: 2,
-        task: "Buy Ticket",
-        completed: true,
-        dueDate: new Date(2021, 6, 4),
-      },
-      {
-        id: 3,
-        task: "Go Shopping",
-        important: true,
-      },
-    ]);
+    const search = ref("");
+    const activeSearch = ref("");
+    const todos = ref([]);
+
+    onMounted(async () => {
+      const collectionRef = db.collection("todos");
+      const snapshot = await collectionRef.get();
+      snapshot.docs.forEach((doc) => {
+        todos.value.push({ ...doc.data(), id: doc.id });
+      });
+    });
 
     const setSortType = (type) => {
       sortType.value = type;
@@ -60,7 +53,24 @@ export default {
       return todos.value;
     });
 
-    return { todos, setSortType, sortedTodos };
+    watch(search, (val) => {
+      setTimeout(() => {
+        if (val === search.value) {
+          activeSearch.value = val;
+        }
+      }, 300);
+    });
+
+    const searchTodos = computed(() => {
+      if (activeSearch.value) {
+        return sortedTodos.value.filter((todo) =>
+          todo.task.toUpperCase().includes(search.value.toUpperCase())
+        );
+      }
+      return sortedTodos.value;
+    });
+
+    return { todos, setSortType, sortedTodos, search, searchTodos };
   },
 };
 </script>
