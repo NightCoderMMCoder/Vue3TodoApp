@@ -15,7 +15,7 @@
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <i class="fas fa-sort"></i> Sort
+        <i class="fas fa-sort me-1"></i> Sort
       </button>
       <ul class="dropdown-menu" aria-labelledby="sort">
         <li @click="$emit('setSortType')">

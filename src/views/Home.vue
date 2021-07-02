@@ -31,12 +31,28 @@ export default {
       // });
       // loading.value = false;
       collectionRef.onSnapshot((snapshot) => {
-        const results = [];
-        snapshot.docs.forEach((doc) => {
-          results.push({ ...doc.data(), id: doc.id });
+        // const results = [];
+        // snapshot.docs.forEach((doc) => {
+        //   results.push({ ...doc.data(), id: doc.id });
+        // });
+        // todos.value = results;
+        // loading.value = false;
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            todos.value.unshift({ ...change.doc.data(), id: change.doc.id });
+          } else if (change.type === "modified") {
+            const idx = todos.value.findIndex(
+              (todo) => todo.id === change.doc.id
+            );
+            Object.assign(todos.value[idx], change.doc.data());
+          } else if (change.type === "removed") {
+            const idx = todos.value.findIndex(
+              (todo) => todo.id === change.doc.id
+            );
+            todos.value.splice(idx, 1);
+          }
+          loading.value = false;
         });
-        todos.value = results;
-        loading.value = false;
       });
     });
 
