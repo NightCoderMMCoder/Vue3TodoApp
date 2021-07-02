@@ -1,6 +1,11 @@
 <template>
   <div class="form-check">
-    <input class="form-check-input" type="checkbox" :checked="todo.completed" />
+    <input
+      class="form-check-input"
+      type="checkbox"
+      :checked="todo.completed"
+      @change="updateTodo('completed')"
+    />
     <label class="form-check-label">
       <p class="mb-0">
         <span :class="{ completed: todo.completed }">{{ todo.task }}</span>
@@ -16,7 +21,11 @@
           @click="$router.push({ name: 'EditTodo', params: { id: todo.id } })"
         ></i>
         <i class="fas fa-trash" @click="deleteTodo(todo.id)"></i>
-        <i class="far fa-star" :class="{ important: todo.important }"></i>
+        <i
+          class="far fa-star"
+          :class="{ important: todo.important }"
+          @click="updateTodo('important')"
+        ></i>
       </span>
     </label>
   </div>
@@ -37,11 +46,10 @@ export default {
       return;
     });
 
+    const docRef = db.collection("todos").doc(props.todo.id);
+
     const deleteTodo = async () => {
-      await db
-        .collection("todos")
-        .doc(props.todo.id)
-        .delete();
+      await docRef.delete();
     };
 
     const isOverDue = computed(() => {
@@ -53,7 +61,11 @@ export default {
       return;
     });
 
-    return { formatDate, isOverDue, deleteTodo };
+    const updateTodo = async (update) => {
+      await docRef.update({ [update]: !props.todo[update] });
+    };
+
+    return { formatDate, isOverDue, deleteTodo, updateTodo };
   },
 };
 </script>
